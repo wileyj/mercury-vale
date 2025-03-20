@@ -51,6 +51,7 @@ jobs:
       inputs.signer_tag != ''
     name: Build Binaries
     runs-on: ubuntu-latest
+    environment: "Build Release"
     strategy:
       ## Run a maximum of 10 builds concurrently, using the matrix defined in inputs.arch
       max-parallel: 10
