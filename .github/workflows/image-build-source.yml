@@ -21,6 +21,7 @@ jobs:
   image:
     name: Build Image
     runs-on: ubuntu-latest
+    environment: "Push to Docker"
     strategy:
       fail-fast: false
       ## Build a maximum of 2 images concurrently based on matrix.dist
