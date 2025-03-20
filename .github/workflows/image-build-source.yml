@@ -47,7 +47,6 @@ jobs:
         with:
           images: |
             ${{env.docker-org}}/${{ github.event.repository.name }}
-            ${{env.docker-org}}/stacks-blockchain
           tags: |
             type=raw,value=${{ env.BRANCH_NAME }}
             type=ref,event=pr
