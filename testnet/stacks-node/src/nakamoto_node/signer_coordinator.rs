@@ -298,7 +298,10 @@ impl SignerCoordinator {
             );
 
             match res {
-                Err(NakamotoNodeError::SignatureTimeout) => continue,
+                Err(NakamotoNodeError::SignatureTimeout) => {
+                    info!("Block proposal signing process timed out, resending the same proposal");
+                    continue;
+                }
                 _ => return res,
             }
         }
@@ -372,7 +375,7 @@ impl SignerCoordinator {
                             warn!(
                                 "Failed to query chainstate for block: {e:?}";
                                 "block_id" => %block_id,
-                                "block_signer_sighash" => %block_signer_sighash,
+                                "signer_signature_hash" => %block_signer_sighash,
                             );
                             e
                         })
@@ -447,13 +450,13 @@ impl SignerCoordinator {
                 info!(
                     "{}/{} signers vote to reject block",
                     block_status.total_weight_rejected, self.total_weight;
-                    "block_signer_sighash" => %block_signer_sighash,
+                    "signer_signature_hash" => %block_signer_sighash,
                 );
                 counters.bump_naka_rejected_blocks();
                 return Err(NakamotoNodeError::SignersRejected);
             } else if block_status.total_weight_approved >= self.weight_threshold {
                 info!("Received enough signatures, block accepted";
-                    "block_signer_sighash" => %block_signer_sighash,
+                    "signer_signature_hash" => %block_signer_sighash,
                 );
                 return Ok(block_status.gathered_signatures.values().cloned().collect());
             } else if rejections_timer.elapsed() > *rejections_timeout {
